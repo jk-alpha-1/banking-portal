@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>SecureBank Advanced Portal</title>
+<style>
+body{
+    font-family: Arial;
+    background: linear-gradient(to right,#1e3c72,#2a5298);
+    margin:0;
+}
+.container{
+    width:380px;
+    margin:50px auto;
+    background:white;
+    padding:25px;
+    border-radius:10px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.3);
+}
+h2{text-align:center;}
+input{
+    width:100%;
+    padding:8px;
+    margin:8px 0;
+}
+button{
+    width:100%;
+    padding:8px;
+    margin-top:5px;
+    background:#2a5298;
+    color:white;
+    border:none;
+    cursor:pointer;
+}
+button:hover{background:#1e3c72;}
+.hidden{display:none;}
+.balance{
+    background:#f2f2f2;
+    padding:10px;
+    margin:10px 0;
+    border-radius:5px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- SIGNUP -->
+<div class="container" id="signupBox">
+<h2>Create Account</h2>
+<input type="text" id="newUser" placeholder="Username">
+<input type="password" id="newPass" placeholder="Login Password">
+<input type="password" id="newTransPass" placeholder="Transaction Password">
+<button onclick="signup()">Create Account</button>
+<p style="text-align:center">Already have account?
+<a href="#" onclick="showLogin()">Login</a></p>
+</div>
+
+<!-- LOGIN -->
+<div class="container hidden" id="loginBox">
+<h2>Login</h2>
+<input type="text" id="loginUser" placeholder="Username">
+<input type="password" id="loginPass" placeholder="Password">
+<button onclick="login()">Login</button>
+<p style="text-align:center">New User?
+<a href="#" onclick="showSignup()">Sign Up</a></p>
+</div>
+
+<!-- DASHBOARD -->
+<div class="container hidden" id="dashboard">
+<h2>Bank Dashboard</h2>
+<div class="balance" id="balanceDisplay"></div>
+
+<input type="number" id="amount" placeholder="Enter Amount">
+
+<button onclick="deposit()">Deposit</button>
+<button onclick="withdraw()">Withdraw</button>
+
+<input type="password" id="transPassInput" placeholder="Enter Transaction Password (for withdraw)">
+
+<button onclick="logout()">Logout</button>
+</div>
+
+<script>
+let currentUser = "";
+
+// Switch screens
+function showLogin(){
+    signupBox.classList.add("hidden");
+    loginBox.classList.remove("hidden");
+}
+function showSignup(){
+    loginBox.classList.add("hidden");
+    signupBox.classList.remove("hidden");
+}
+
+// SIGNUP
+function signup(){
+    let user = newUser.value;
+    let pass = newPass.value;
+    let transPass = newTransPass.value;
+
+    if(user && pass && transPass){
+        let account = {
+            password: pass,
+            transactionPassword: transPass,
+            balance: 0
+        };
+        localStorage.setItem(user, JSON.stringify(account));
+        alert("Account Created Successfully!");
+        showLogin();
+    }else{
+        alert("Fill all fields");
+    }
+}
+
+// LOGIN
+function login(){
+    let user = loginUser.value;
+    let pass = loginPass.value;
+
+    let data = localStorage.getItem(user);
+    if(data){
+        let account = JSON.parse(data);
+        if(account.password === pass){
+            currentUser = user;
+            loginBox.classList.add("hidden");
+            dashboard.classList.remove("hidden");
+            updateBalance();
+        }else{
+            alert("Wrong Password");
+        }
+    }else{
+        alert("User Not Found");
+    }
+}
+
+// UPDATE BALANCE
+function updateBalance(){
+    let account = JSON.parse(localStorage.getItem(currentUser));
+    balanceDisplay.innerHTML = "💰 Balance: ₹" + account.balance;
+}
+
+// DEPOSIT
+function deposit(){
+    let amt = parseInt(amount.value);
+    if(amt > 0){
+        let account = JSON.parse(localStorage.getItem(currentUser));
+        account.balance += amt;
+        localStorage.setItem(currentUser, JSON.stringify(account));
+        updateBalance();
+        alert("Amount Deposited!");
+    }else{
+        alert("Enter valid amount");
+    }
+}
+
+// WITHDRAW
+function withdraw(){
+    let amt = parseInt(amount.value);
+    let transPass = transPassInput.value;
+
+    let account = JSON.parse(localStorage.getItem(currentUser));
+
+    if(account.transactionPassword === transPass){
+        if(amt > 0 && account.balance >= amt){
+            account.balance -= amt;
+            localStorage.setItem(currentUser, JSON.stringify(account));
+            updateBalance();
+            alert("Amount Withdrawn!");
+        }else{
+            alert("Insufficient Balance");
+        }
+    }else{
+        alert("Wrong Transaction Password");
+    }
+}
+
+// LOGOUT
+function logout(){
+    dashboard.classList.add("hidden");
+    loginBox.classList.remove("hidden");
+}
+</script>
+
+</body>
+</html>
