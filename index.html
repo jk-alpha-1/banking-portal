@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SecureBank Portal</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to right, #1e3c72, #2a5298);
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 350px;
+    margin: 100px auto;
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 15px rgba(0,0,0,0.3);
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background: #2a5298;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #1e3c72;
+}
+
+.dashboard {
+    display: none;
+    text-align: center;
+}
+
+.card {
+    background: #f4f4f4;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 8px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container" id="loginBox">
+    <h2>SecureBank Login</h2>
+    <input type="text" id="username" placeholder="Enter Username">
+    <input type="password" id="password" placeholder="Enter Password">
+    <button onclick="login()">Login</button>
+</div>
+
+<div class="container dashboard" id="dashboard">
+    <h2>Welcome to SecureBank</h2>
+    <div class="card">💰 Account Balance: ₹1,25,000</div>
+    <div class="card">📤 Transfer Funds</div>
+    <div class="card">📄 Transaction History</div>
+    <button onclick="logout()">Logout</button>
+</div>
+
+<script>
+function login() {
+    let user = document.getElementById("username").value;
+    let pass = document.getElementById("password").value;
+
+    if(user === "admin" && pass === "1234") {
+        document.getElementById("loginBox").style.display = "none";
+        document.getElementById("dashboard").style.display = "block";
+    } else {
+        alert("Invalid Credentials");
+    }
+}
+
+function logout() {
+    document.getElementById("loginBox").style.display = "block";
+    document.getElementById("dashboard").style.display = "none";
+}
+</script>
+
+</body>
+</html>
